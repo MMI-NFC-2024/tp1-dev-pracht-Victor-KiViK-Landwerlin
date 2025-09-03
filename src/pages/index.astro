@@ -5,12 +5,46 @@ import penguins from "../assets/penguins.json";
 import Layout from "../layouts/Layout.astro";
 ---
 <Layout>
-  <h1>Plot + Astro</h1>
-  <PlotFigure
+	<h2>Penguin Data Visualization</h2>
+<PlotFigure
+  options={{
+    inset: 10,
+    color: {legend: true},
+    marks: [
+	...penguins.reduce((acc: any[], penguin: any) => {
+	  if (!acc.find(group => group[0] === penguin.species)) {
+		acc.push([penguin.species, penguins.filter(p => p.species === penguin.species)]);
+	  }
+	  return acc;
+	}, []).map(([s]: [any, any[]]) =>
+	  Plot.density(penguins, {
+		x: "flipper_length_mm",
+		y: "culmen_length_mm",
+		weight: (d) => d.species === s ? 1 : -1,
+		fill: () => s,
+		fillOpacity: 0.2,
+		thresholds: [0.05]
+	  })
+      ),
+      Plot.dot(penguins, {
+        x: "flipper_length_mm",
+        y: "culmen_length_mm",
+        stroke: "species"
+      }),
+      Plot.frame()
+    ]
+  }}
+/>
+
+<PlotFigure
     options={{
       marks: [
-        Plot.dot(penguins, {x: 'culmen_length_mm', y: 'culmen_depth_mm'}),
+        Plot.barY(
+          penguins,
+          Plot.groupX({ y: "count" }, { x: "island", fill: "species" })
+        ),
       ],
+      color: { legend: true },
     }}
   />
 

@@ -1,0 +1,20 @@
+---
+import * as Plot from "@observablehq/plot";
+import PlotFigure from "../components/PlotFigure.astro";
+import diamonds from "../assets/diamonds.json";
+import Layout from "../layouts/Layout.astro";
+---
+<Layout>
+  <h1>Diamant</h1>
+  <PlotFigure
+    options={{
+      marks: [
+        Plot.barY(
+          diamonds, {x: "color", y: "carat", sort: {x: "y", reverse: true}}
+        ),
+      ],
+      color: { legend: true },
+    }}
+  />
+
+</Layout>
